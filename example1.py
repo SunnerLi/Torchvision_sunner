@@ -53,8 +53,8 @@ if __name__ == '__main__':
         
         # Show
         batch_img = batch_img1[0].astype(np.uint8)
-        cv2.imshow('show_window', batch_img)
-        cv2.waitKey()
+        # cv2.imshow('show_window', batch_img)
+        # cv2.waitKey()
 
         # Done
         break
