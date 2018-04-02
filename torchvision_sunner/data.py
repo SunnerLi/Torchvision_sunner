@@ -17,7 +17,7 @@ def quiet():
     verbose = False
 
 class ImageDataset(Data.Dataset):
-    def __init__(self, root_list, use_cv = True, sample_method = UNDER_SAMPLING, transform = None):
+    def __init__(self, root_list, use_cv = True, sample_method = UNDER_SAMPLING, transform = None, test_ratio = 0.0):
         global verbose
         import glob
         import os
@@ -26,20 +26,65 @@ class ImageDataset(Data.Dataset):
         self.use_cv = use_cv
         self.sample_method = sample_method
         self.transform = transform
+        self.test_ratio = test_ratio
         if not isinstance(root_list, (list, int)) and not isinstance(root_list, (tuple, int)):
             raise Exception('The type of 1st parameter should be tuple or list')
+        channel_format_desc = "cv" if use_cv else "skimage"
+
+        """
+        1. [img1, img2]
+        2. [folder1, folder2]
+        3. [[img1, img2], [img1, img2]]
+        4. [[img1, img2], folder1]
+        """
+        origin_img_list = []
         for root in root_list:
-            if os.path.exists(root):
-                img_list = glob.glob(os.path.join(root, '*'))
-                img_list = sorted(img_list)
-                channel_format_desc = "cv" if use_cv else "skimage"
+            if type(root) == str:
+                if os.path.exists(root):
+                    # ----------------------------------------------------------
+                    # This function accept the user to key for two form:
+                    # 1. The name of folder
+                    # 2. The list of images
+                    # ----------------------------------------------------------
+                    if os.path.isdir(root):
+                        img_list = glob.glob(os.path.join(root, '*'))
+                        img_list = sorted(img_list)
+                        if len(origin_img_list) > 0:
+                            self.folder_list.append(origin_img_list)
+                            if verbose:
+                                print("[ ImageDataset ] path: %40s \t image number: %d \t channel format: %s" 
+                                    % ('self-Defined', len(origin_img_list), channel_format_desc)
+                                )
+                            origin_img_list = []
+                        self.folder_list.append(img_list)
+                        if verbose:
+                            print("[ ImageDataset ] path: %40s \t image number: %d \t channel format: %s" 
+                                % (root, len(img_list), channel_format_desc)
+                            )
+                    else:
+                        origin_img_list.append(root)                        
+                else:
+                    raise Exception("root folder or image not found...")
+
+            # Check the image is exist toward given image list
+            elif type(root) == list:
+                for name in root:
+                    if not os.path.exists(name):
+                        raise Exception("Image %s not found..." % (name))
                 if verbose:
-                    print("[ ImageDataset ] path: %20s \t image number: %d \t channel format: %s" 
-                        % (root, len(img_list), channel_format_desc)
+                    print("[ ImageDataset ] path: %40s \t image number: %d \t channel format: %s" 
+                        % ('self-Defined', len(root), channel_format_desc)
                     )
-                self.folder_list.append(img_list)
-            else:
-                raise Exception("root folder not found...")
+                self.folder_list.append(root)
+
+        # If there is only one image list, append it!
+        if len(origin_img_list) > 0:
+            self.folder_list.append(origin_img_list)
+            if verbose:
+                print("[ ImageDataset ] path: %40s \t image number: %d \t channel format: %s" 
+                    % ('self-Defined', len(origin_img_list), channel_format_desc)
+                )
+            origin_img_list = []
 
         self.setImgNumber()
         if self.sample_method == OVER_SAMPLING:
@@ -95,7 +140,7 @@ class ImageLoader(Data.DataLoader):
         self.iter_num = self.getIterNumber()
 
     def getIterNumber(self):       
-        return round(self.dataset.img_num / self.batch_size)
+        return round(self.dataset.img_num / self.batch_size) + 1
         # return round(len(self.dataset.data_tensor) / self.batch_size)
 
     def getImageNumber(self):

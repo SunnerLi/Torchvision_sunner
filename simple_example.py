@@ -10,8 +10,7 @@ if __name__ == '__main__':
     # sunnerData.quiet()
     # sunnertransforms.quiet()
     dataset = sunnerData.ImageDataset(
-        root_list = ['./waiting_for_you_dataset/real_world', './waiting_for_you_dataset/wait'],
-        # root_list = ['./waiting_for_you_dataset/wait/a_0.jpg', './waiting_for_you_dataset/wait/a_1.jpg'],        
+        root_list = ['./waiting_for_you_dataset/wait/a_0.jpg', './waiting_for_you_dataset/wait/a_1.jpg'],        
         transform = transforms.Compose([
             sunnertransforms.Rescale((160, 320)),
             sunnertransforms.ToTensor(),
@@ -30,31 +29,12 @@ if __name__ == '__main__':
         # ex. [32, 3, 160, 320]
         data_tuple = loader_iter.next()
         batch_img1 = torch.stack(data_tuple[0], 0)
-        batch_img2 = torch.stack(data_tuple[1], 0)
-        print(np.shape(batch_img2))
-
-        # --------------------------------------------------------------------------
-        # Do something...
-        # result_image = model()
-        # batch_img1 = result_image
-        # --------------------------------------------------------------------------
-
-        # Transfer tensor into numpy object
-        # Result size: [batch_size, image_height, image_width, image_channel]
-        # ex. [32, 160, 320, 3]
         batch_img1 = sunnertransforms.tensor2Numpy(batch_img1, transform = transforms.Compose([
             sunnertransforms.UnNormalize([127., 127., 127.], [127., 127., 127.]),
             sunnertransforms.Transpose(sunnertransforms.BCHW2BHWC),
         ]))
-        batch_img2 = sunnertransforms.tensor2Numpy(batch_img2, transform = transforms.Compose([
-            sunnertransforms.UnNormalize([127., 127., 127.], [127., 127., 127.]),
-            sunnertransforms.Transpose(sunnertransforms.BCHW2BHWC), 
-        ]))
-        
+
         # Show
         batch_img = batch_img1[0].astype(np.uint8)
         cv2.imshow('show_window', batch_img)
         cv2.waitKey()
-
-        # Done
-        break
