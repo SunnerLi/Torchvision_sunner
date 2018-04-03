@@ -28,7 +28,7 @@ if __name__ == '__main__':
         # Set the input tensor
         # Result size: [batch_size, image_channel, image_height, image_width]
         # ex. [32, 3, 160, 320]
-        data_tuple = loader_iter.next()
+        data_tuple = loader_iter.next() 
         batch_img1 = torch.stack(data_tuple[0], 0)
         batch_img2 = torch.stack(data_tuple[1], 0)
         print(np.shape(batch_img2))

@@ -1,6 +1,7 @@
 import torchvision.transforms as transforms
 import torch.utils.data as Data
 import numpy as np
+import pickle
 import random
 import torch
 import math
@@ -28,10 +29,17 @@ class ImageDataset(Data.Dataset):
         self.use_cv = use_cv
         self.sample_method = sample_method
         self.transform = transform
+        self.new_root_list = []
         self.split_ratio = split_ratio
-        if not isinstance(root_list, (list, int)) and not isinstance(root_list, (tuple, int)):
-            raise Exception('The type of 1st parameter should be tuple or list')
         channel_format_desc = "cv" if use_cv else "skimage"
+
+        if type(self.root_list) == str:
+            if not os.path.exists(self.root_list):
+                raise Exception("The record .pkl file didn't exist. You should check if it's exist y yourself...")
+            with open(root_list, 'rb') as f:
+                obj = pickle.load(f)
+                self.folder_list = obj['img_list']
+                self.new_root_list = obj['root_list']
 
         # -----------------------------------------------------------------------------------------------
         #   This function allow five types of root_list object:
@@ -47,89 +55,89 @@ class ImageDataset(Data.Dataset):
         #   * self.folder_list: The list object which contain the list of images
         #
         # -----------------------------------------------------------------------------------------------
-        origin_img_list = []
-        new_root_list = []
-        for root in root_list:
-            if type(root) == str:
-                if os.path.exists(root):
-                    # -----------------------------------------------------------------------------------
-                    # This function accept the user to key for two form:
-                    # 1. The name of folder
-                    # 2. The list of images
-                    # -----------------------------------------------------------------------------------
-                    if os.path.isdir(root):
-                        img_list = glob.glob(os.path.join(root, '*'))
-                        img_list = sorted(img_list)
-                        if len(origin_img_list) > 0:
-                            self.folder_list.append(origin_img_list)
-                            new_root_list.append('self')
-                            origin_img_list = []
-                        self.folder_list.append(img_list)
-                        new_root_list.append(root)                     
-                    else:
-                        origin_img_list.append(root)
-                else:
-                    raise Exception("root folder or image not found...")
-
-            # Check the image is exist toward given image list
-            elif type(root) == list:
-                for name in root:
-                    if not os.path.exists(name):
-                        raise Exception("Image %s not found..." % (name))
-                self.folder_list.append(root)
-                new_root_list.append('self')
-
-        # If there is only one image list, append it!
-        if len(origin_img_list) > 0:
-            self.folder_list.append(origin_img_list)
-            new_root_list.append('self')
+        if len(self.new_root_list) == 0:
             origin_img_list = []
+            for root in root_list:
+                if type(root) == str:
+                    if os.path.exists(root):
+                        # -----------------------------------------------------------------------------------
+                        # This function accept the user to key for two form:
+                        # 1. The name of folder
+                        # 2. The list of images
+                        # -----------------------------------------------------------------------------------
+                        if os.path.isdir(root):
+                            img_list = glob.glob(os.path.join(root, '*'))
+                            img_list = sorted(img_list)
+                            if len(origin_img_list) > 0:
+                                self.folder_list.append(origin_img_list)
+                                self.new_root_list.append('self')
+                                origin_img_list = []
+                            self.folder_list.append(img_list)
+                            self.new_root_list.append(root)                     
+                        else:
+                            origin_img_list.append(root)
+                    else:
+                        raise Exception("root folder or image not found...")
 
-        # ----------------------------------------------------------------------
-        # Split as train and test
-        """
-            [[a_1, a_2, a_3], [b_1, b_2]]
-        """
-        # ----------------------------------------------------------------------
-        def generateIndexList(a, size):
-            result = set()
-            while len(result) != size:
-                result.add(random.randint(0, len(a)))
-            return list(result)
+                # Check the image is exist toward given image list
+                elif type(root) == list:
+                    for name in root:
+                        if not os.path.exists(name):
+                            raise Exception("Image %s not found..." % (name))
+                    self.folder_list.append(root)
+                    self.new_root_list.append('self')
 
-        self.setImgNumber()
-        if self.split_ratio:
-            train_folder_list = list(self.folder_list)
-            self.test_folder_list = []
-            if len(set(self.img_num_list)) == 1:
-                # Determine the choice index list
-                test_img_num = math.floor(self.img_num_list[0] * self.split_ratio)
-                choice_index_list = generateIndexList(range(self.img_num_list[0]), size = test_img_num)
+            # If there is only one image list, append it!
+            if len(origin_img_list) > 0:
+                self.folder_list.append(origin_img_list)
+                self.new_root_list.append('self')
+                origin_img_list = []
 
-                # Generate the test list and remove from train list
-                for i, img_list in enumerate(self.folder_list):
-                    pick_list = []
-                    for idx in choice_index_list:
-                        pick_list.append(img_list[idx])
-                    self.test_folder_list.append(pick_list)
-                for i in range(len(self.test_folder_list)):
-                    for test_img_name in self.test_folder_list[i]:
-                        train_folder_list[i].remove(test_img_name)
-            else:
-                for i, img_list in enumerate(self.folder_list):
-                    pick_list = []
-                    test_img_num = math.floor(len(img_list) * self.split_ratio)
-                    choice_index_list = generateIndexList(range(len(img_list)), size = test_img_num)
-                    for idx in choice_index_list:
-                        pick_list.append(img_list[idx])
-                    self.test_folder_list.append(pick_list)
-                for i in range(len(self.test_folder_list)):
-                    for test_img_name in self.test_folder_list[i]:
-                        train_folder_list[i].remove(test_img_name)
-            self.folder_list = train_folder_list
+            # ----------------------------------------------------------------------
+            # Split as train and test
+            """
+                [[a_1, a_2, a_3], [b_1, b_2]]
+            """
+            # ----------------------------------------------------------------------
+            def generateIndexList(a, size):
+                result = set()
+                while len(result) != size:
+                    result.add(random.randint(0, len(a) - 1))
+                return list(result)
+
+            self.setImgNumber()
+            if self.split_ratio:
+                train_folder_list = list(self.folder_list)
+                self.test_folder_list = []
+                if len(set(self.img_num_list)) == 1:
+                    # Determine the choice index list
+                    test_img_num = math.floor(self.img_num_list[0] * self.split_ratio)
+                    choice_index_list = generateIndexList(range(self.img_num_list[0]), size = test_img_num)
+
+                    # Generate the test list and remove from train list
+                    for i, img_list in enumerate(self.folder_list):
+                        pick_list = []
+                        for idx in choice_index_list:
+                            pick_list.append(img_list[idx])
+                        self.test_folder_list.append(pick_list)
+                    for i in range(len(self.test_folder_list)):
+                        for test_img_name in self.test_folder_list[i]:
+                            train_folder_list[i].remove(test_img_name)
+                else:
+                    for i, img_list in enumerate(self.folder_list):
+                        pick_list = []
+                        test_img_num = math.floor(len(img_list) * self.split_ratio)
+                        choice_index_list = generateIndexList(range(len(img_list)), size = test_img_num)
+                        for idx in choice_index_list:
+                            pick_list.append(img_list[idx])
+                        self.test_folder_list.append(pick_list)
+                    for i in range(len(self.test_folder_list)):
+                        for test_img_name in self.test_folder_list[i]:
+                            train_folder_list[i].remove(test_img_name)
+                self.folder_list = train_folder_list
         
         # Print the Information
-        for i, root in enumerate(new_root_list):
+        for i, root in enumerate(self.new_root_list):
             split_or_not = 'Split' if self.split_ratio != 0.0 else 'Remain'
             if type(root) == str and verbose:
                 print("[ ImageDataset ] image number: %d \t split type: %6s \t channel format: %s \t path: %s" 
@@ -141,6 +149,7 @@ class ImageDataset(Data.Dataset):
                 )
 
         # Adjust the image number
+        self.setImgNumber()
         if self.sample_method == OVER_SAMPLING:
             self.fill()
             self.img_num = max(self.img_num_list)
@@ -189,6 +198,21 @@ class ImageDataset(Data.Dataset):
     def quiet(self):
         global verbose
         verbose = False
+
+    def save(self, remain_save_path = 'remain.pkl', split_save_path = 'split.pkl'):
+        with open(remain_save_path, 'wb') as f:
+            save_obj = {
+                'img_list': self.folder_list,
+                'root_list': self.new_root_list
+            }
+            pickle.dump(save_obj, f)
+        if len(self.test_folder_list) > 0:
+            with open(split_save_path, 'wb') as f:
+                save_obj = {
+                    'img_list': self.test_folder_list,
+                    'root_list': ['self'] * len(self.new_root_list)
+                }
+                pickle.dump(save_obj, f)
 
 class ImageLoader(Data.DataLoader):
     def __init__(self, dataset, batch_size=1, shuffle=False, num_workers = 1):
