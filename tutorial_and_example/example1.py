@@ -5,13 +5,14 @@ import numpy as np
 import torch
 import cv2
 
+"""
+    This example shows the detail usage of this wrapper
+"""
+
 if __name__ == '__main__':
     # Define dataset & loader
-    # sunnerData.quiet()
-    # sunnertransforms.quiet()
     dataset = sunnerData.ImageDataset(
         root_list = ['./waiting_for_you_dataset/real_world', './waiting_for_you_dataset/wait'],
-        # root_list = ['./waiting_for_you_dataset/wait/a_0.jpg', './waiting_for_you_dataset/wait/a_1.jpg'],        
         transform = transforms.Compose([
             sunnertransforms.Rescale((160, 320)),
             sunnertransforms.ToTensor(),
@@ -53,8 +54,8 @@ if __name__ == '__main__':
         
         # Show
         batch_img = batch_img1[0].astype(np.uint8)
-        # cv2.imshow('show_window', batch_img)
-        # cv2.waitKey()
+        cv2.imshow('show_window', batch_img)
+        cv2.waitKey()
 
         # Done
         break

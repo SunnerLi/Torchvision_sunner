@@ -6,7 +6,6 @@ import random
 import torch
 import math
 import glob
-import cv2
 import os
 
 UNDER_SAMPLING = 0
@@ -21,6 +20,17 @@ def quiet():
 
 class ImageDataset(Data.Dataset):
     def __init__(self, root_list, use_cv = True, sample_method = UNDER_SAMPLING, transform = None, split_ratio = 0.0):
+        """
+            The dataset object which can receive multiple image set.
+
+            Arg:    root_list       - List. The list of image set, the string is also adopt if you want to directly assign the .pkl structure file
+                    use_cv          - Bool. If use OpenCV as back-end or not 
+                                      (default is True)
+                    sample_method   - sunnerData.UNDER_SAMPLING or sunnerData.OVER_SAMPLING. Use down sampling or over sampling to deal with data unbalance problem.
+                                      (default is sunnerData.OVER_SAMPLING)
+                    transform       - transform.Compose object. You can declare some pre-process toward the image
+                    split_ratio     - Float. The proportion to split the data. Usually used to split the testing data
+        """
         global verbose
         import glob
         import os
@@ -216,6 +226,14 @@ class ImageDataset(Data.Dataset):
 
 class ImageLoader(Data.DataLoader):
     def __init__(self, dataset, batch_size=1, shuffle=False, num_workers = 1):
+        """
+            The DataLoader object which can deal with ImageDataset object.
+
+            Arg:    dataset     - ImageDataset. You should use sunnerData.ImageDataset to generate the instance first
+                    batch_size  - Int.
+                    shuffle     - Bool. Shuffle the data or not
+                    num_workers - Int. How many thread you want to use to read the batch data
+        """
         super(ImageLoader, self).__init__(dataset, batch_size=batch_size, shuffle=shuffle, num_workers = num_workers)
         self.dataset = dataset
         self.iter_num = self.getIterNumber()

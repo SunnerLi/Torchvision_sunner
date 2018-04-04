@@ -42,7 +42,7 @@ if __name__ == '__main__':
 
         # Show
         batch_img = batch_img[0].astype(np.uint8)
-        # cv2.namedWindow('show_window', cv2.WINDOW_AUTOSIZE)
-        # cv2.imshow('show_window', batch_img)
-        # cv2.waitKey(1000)
+        cv2.namedWindow('show_window', cv2.WINDOW_AUTOSIZE)
+        cv2.imshow('show_window', batch_img)
+        cv2.waitKey(1000)
         break

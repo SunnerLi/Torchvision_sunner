@@ -5,10 +5,14 @@ import numpy as np
 import torch
 import cv2
 
+"""
+    This example show to mute the remind
+"""
+
 if __name__ == '__main__':
     # Define dataset & loader
-    # sunnerData.quiet()
-    # sunnertransforms.quiet()
+    sunnerData.quiet()
+    sunnertransforms.quiet()
     dataset = sunnerData.ImageDataset(
         root_list = ['./waiting_for_you_dataset/wait/a_0.jpg', './waiting_for_you_dataset/wait/a_1.jpg'],        
         transform = transforms.Compose([
@@ -38,4 +42,4 @@ if __name__ == '__main__':
         batch_img = batch_img1[0].astype(np.uint8)
         cv2.namedWindow('show_window', cv2.WINDOW_AUTOSIZE)
         cv2.imshow('show_window', batch_img)
-        # cv2.waitKey(1000)
+        cv2.waitKey(1000)
