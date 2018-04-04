@@ -8,6 +8,8 @@
 [![Packagist](https://img.shields.io/badge/OpenCV-3.1.0-brightgreen.svg)]()
 [![Packagist](https://img.shields.io/badge/skImage-0.13.1-green.svg)]()
 
+![](https://github.com/SunnerLi/Torchvision_sunner/blob/master/logo.png)
+
 Motivation
 ---
 In pytorch, the common dataset can be load in an easy way. It also provides the `TensorDataset` to form the dataset. However, if we want to custom our unique image folder, or we want to load the muultiple image, the original methods cannot complete this work. In this package, you can load multiple images in an easy way!    
