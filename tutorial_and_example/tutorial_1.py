@@ -23,7 +23,7 @@ if __name__ == '__main__':
     loader = sunnerData.ImageLoader(dataset, batch_size=32, shuffle=False, num_workers = 2)
     loader_iter = iter(loader)
     image_tensor = loader_iter.next()
-    batch_img = torch.stack(image_tensor[0], 0)
+    batch_img = image_tensor[0]
     batch_img = sunnertransforms.tensor2Numpy(batch_img, transform = transforms.Compose([
         sunnertransforms.Transpose(sunnertransforms.BCHW2BHWC),
     ]))
@@ -45,7 +45,7 @@ if __name__ == '__main__':
     loader = sunnerData.ImageLoader(dataset, batch_size=32, shuffle=False, num_workers = 2)
     loader_iter = iter(loader)
     image_tensor = loader_iter.next()
-    batch_img = torch.stack(image_tensor[0], 0)
+    batch_img = image_tensor[0]
     batch_img = sunnertransforms.tensor2Numpy(batch_img, transform = transforms.Compose([
         sunnertransforms.Transpose(sunnertransforms.BCHW2BHWC),
     ]))
@@ -68,7 +68,7 @@ if __name__ == '__main__':
     loader = sunnerData.ImageLoader(dataset, batch_size=32, shuffle=False, num_workers = 2)
     loader_iter = iter(loader)
     image_tensor = loader_iter.next()
-    batch_img = torch.stack(image_tensor[0], 0)
+    batch_img = image_tensor[0]
     batch_img = sunnertransforms.tensor2Numpy(batch_img, transform = transforms.Compose([
         sunnertransforms.Transpose(sunnertransforms.BCHW2BHWC),
     ]))
@@ -91,7 +91,7 @@ if __name__ == '__main__':
     loader = sunnerData.ImageLoader(dataset, batch_size=32, shuffle=True, num_workers = 2)
     loader_iter = iter(loader)
     image_tensor = loader_iter.next()
-    batch_img = torch.stack(image_tensor[1], 0)
+    batch_img = image_tensor[1]
     batch_img = sunnertransforms.tensor2Numpy(batch_img, transform = transforms.Compose([
         sunnertransforms.Transpose(sunnertransforms.BCHW2BHWC),
     ]))

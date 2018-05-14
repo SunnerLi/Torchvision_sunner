@@ -36,7 +36,7 @@ if __name__ == '__main__':
         img = img[0]
         img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
         img = img.astype(np.uint8)
-        cv2.imshow('show', img)
+        # cv2.imshow('show', img)
         cv2.waitKey()
 
         # Done

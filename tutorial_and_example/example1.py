@@ -9,7 +9,7 @@ import cv2
     This example shows the detail usage of this wrapper
 """
 
-if __name__ == '__main__':
+def main():
     # Define dataset & loader
     dataset = sunnerData.ImageDataset(
         root_list = ['./waiting_for_you_dataset/real_world', './waiting_for_you_dataset/wait'],
@@ -30,8 +30,8 @@ if __name__ == '__main__':
         # Result size: [batch_size, image_channel, image_height, image_width]
         # ex. [32, 3, 160, 320]
         data_tuple = loader_iter.next() 
-        batch_img1 = torch.stack(data_tuple[0], 0)
-        batch_img2 = torch.stack(data_tuple[1], 0)
+        batch_img1 = data_tuple[0]
+        batch_img2 = data_tuple[1]
         print(np.shape(batch_img2))
 
         # --------------------------------------------------------------------------
@@ -59,3 +59,6 @@ if __name__ == '__main__':
 
         # Done
         break
+
+if __name__ == '__main__':
+    main()

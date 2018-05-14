@@ -10,7 +10,7 @@ import cv2
     This tutorial shows how to use dataloader to load the batch image
 """
 
-if __name__ == '__main__':
+def main():
     dataset = sunnerData.ImageDataset(
         root_list = ['./waiting_for_you_dataset/real_world', './waiting_for_you_dataset/wait'],
         transform = transforms.Compose([
@@ -27,7 +27,7 @@ if __name__ == '__main__':
 
     # load the next batch
     image_tensor = loader_iter.next()
-    batch_img = torch.stack(image_tensor[0], 0)
+    batch_img = image_tensor[0]
 
     # post-process
     batch_img = sunnertransforms.tensor2Numpy(batch_img, transform = transforms.Compose([
@@ -47,3 +47,6 @@ if __name__ == '__main__':
         cv2.imshow('show', batch_img[1])
         cv2.waitKey()
         break
+
+if __name__ == '__main__':
+    main()    

@@ -32,7 +32,7 @@ if __name__ == '__main__':
         # Result size: [batch_size, image_channel, image_height, image_width]
         # ex. [32, 3, 160, 320]
         data_tuple = loader_iter.next()
-        batch_img1 = torch.stack(data_tuple[0], 0)
+        batch_img1 = data_tuple[0]
         batch_img1 = sunnertransforms.tensor2Numpy(batch_img1, transform = transforms.Compose([
             sunnertransforms.UnNormalize([127., 127., 127.], [127., 127., 127.]),
             sunnertransforms.Transpose(sunnertransforms.BCHW2BHWC),
