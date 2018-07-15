@@ -2,7 +2,7 @@
 
 ### The flexible extension of torchvision toward multiple image space 
 
-[![Packagist](https://img.shields.io/badge/Version-18.4.4-yellow.svg)]()
+[![Packagist](https://img.shields.io/badge/Version-18.5.14-yellow.svg)]()
 [![Packagist](https://img.shields.io/badge/Pytorch-0.3.0-red.svg)]()
 [![Packagist](https://img.shields.io/badge/Torchvision-0.2.0-red.svg)]()
 [![Packagist](https://img.shields.io/badge/Python-3.5.2-blue.svg)]()
@@ -11,9 +11,9 @@
 
 ![](https://github.com/SunnerLi/Torchvision_sunner/blob/master/logo.png)
 
-Pytorch issue
+Update
 ---
-After the updating in 5/14, this repo also support pytorch with version `0.4.0`!!! Please check the difference in the example code and totorial. This wrapper can still support with pytorch `0.3.0+`.    
+The Torchvision_sunner package has moved to [gitlab](https://gitlab.com/SunnerLi/Torchvision_sunner) already! The github only supply the stable version. If you want to use the latest version, you should visit [gitlab](https://gitlab.com/SunnerLi/Torchvision_sunner) main page!      
 
 Motivation
 ---
@@ -38,6 +38,10 @@ import torchvision_sunner.transforms as sunnertransforms
 import torchvision_sunner.data as sunnerData
 ```
 And start for your flexible data processing! The more detail can be refer to [wiki](https://github.com/SunnerLi/Torchvision_sunner/wiki).     
+
+Tutorial
+---
+Since this project has already moved to gitlab, we provide the clear usage in the wiki page in both github and gitlab! Also, we will keep updating the containing in gitlab. You can visit the newest wiki [here](https://gitlab.com/SunnerLi/Torchvision_sunner/wikis/home). Unfortunately, we didn't have full time to write readthedocs. In the future, we will expect this plan after the stars of encouragement.    
 
 Notice
 ---
