@@ -1,7 +1,8 @@
 from torchvision_sunner.constant import *
 from torchvision_sunner.utils import INFO
-import torch.utils.data as Data
+import torchvision_sunner.setting as setting
 
+import torch.utils.data as Data
 import pickle
 import random
 import os
@@ -79,3 +80,11 @@ class BaseDataset(Data.Dataset):
                         'root': self.root,
                         'files': self.split_files
                     }, f) 
+
+    def __getitem__(self, index):
+        """
+            Define the __getitem__ operation which will do in the parent class
+
+            Arg:    index   - The number of index you want to query
+        """
+        setting.random_seed = random.random()

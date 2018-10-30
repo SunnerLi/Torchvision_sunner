@@ -287,6 +287,7 @@ class VideoDataset(BaseDataset):
         """
             Return single batch of data, and the rank is BTCHW
         """
+        super().__getitem__(index)
         result = []
         for domain_idx in range(len(self.root)):
 

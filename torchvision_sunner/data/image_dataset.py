@@ -202,6 +202,7 @@ class ImageDataset(BaseDataset):
         return self.img_num
 
     def __getitem__(self, index):
+        super().__getitem__(index)
         return_list = []
         for domain in self.root:
             img_path = self.files[domain][index]
