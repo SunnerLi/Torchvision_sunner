@@ -88,3 +88,27 @@ class RandomHorizontalFlip():
             tensor_list = list(reversed(tensor_list))
             tensor = torch.cat(tensor_list, dim_idx)
         return tensor
+
+class RandomVerticalFlip():
+    def __init__(self, p = 0.5):
+        """
+            Flip the tensor toward vertical direction randomly
+
+            Arg:    p   - The random probability to filp the tensor
+        """
+        INFO("Applied << %15s >>" % self.__class__.__name__)
+        INFO("* Notice: the rank format of input tensor should be 'BCHW'")
+        if p < 0.0 or p > 1.0:
+            raise Exception("The parameter 'p' should in (0, 1], but get {}".format(p))
+        self.p = p
+
+    def __call__(self, tensor):
+        """
+            Arg:    tensor - The torch.Tensor object. The tensor you want to deal with
+        """
+        if setting.random_seed < self.p:
+            dim_idx = len(tensor.size()) - 2
+            tensor_list = list(torch.split(tensor, 1, dim=dim_idx))
+            tensor_list = list(reversed(tensor_list))
+            tensor = torch.cat(tensor_list, dim_idx)
+        return tensor
