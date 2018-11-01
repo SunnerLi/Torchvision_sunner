@@ -9,6 +9,8 @@ UNDER_SAMPLING = 0
 OVER_SAMPLING = 1
 BCHW2BHWC = 0
 BHWC2BCHW = 1
+BHW2BCHW = 3
+BTHW2BTCHW = 4
 
 # Categorical constant
 ONEHOT2INDEX = 'one_hot_to_index'
