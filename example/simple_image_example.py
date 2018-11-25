@@ -32,10 +32,13 @@ def main():
     loader = sunnerData.IterationLoader(loader, max_iter = 1)
 
     # Show!
-    for batch_img, _ in loader:
-        batch_img = sunnertransforms.asImg(batch_img, size = (160, 320))
+    for batch_tensor, _ in loader:
+        batch_img = sunnertransforms.asImg(batch_tensor, size = (160, 320))
         cv2.imshow('show_window', batch_img[0][:, :, ::-1])
         cv2.waitKey(0)
+
+        # Or show multiple image in one line
+        sunnertransforms.show(batch_tensor[:10], row=2, column=5)
 
 if __name__ == '__main__':
     main()

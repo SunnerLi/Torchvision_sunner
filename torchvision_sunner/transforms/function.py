@@ -54,3 +54,36 @@ def asImg(tensor, size = None):
         result *= 255.
     result = result.astype(np.uint8)
     return result
+
+def show(tensor, row = 1, column = 1, title = "show_window", sec = -1):
+    """
+        This function can show the image immediately
+        You should be aware that the product of row and column should match the batch size
+        If the criterion is not match, this function only show the first image
+
+        Arg:    tensor  - The tensor you want to show
+                row     - The number of row you want to extend
+                column  - The number of column you want to extend
+                title   - The title string in the demonstration image
+                sec     - The time you want to pause. Set -1 if you want to wait until press any key
+    """
+    # Order the demonstration image
+    if row * column == tensor.size(0):
+        arr = asImg(tensor)
+        demonstrate_img = None
+        for i in range(row):
+            single_row = None
+            for j in range(column):
+                single_row = arr[i * column + j] if single_row is None else np.concatenate((single_row, arr[i * column + j]), 1)
+            single_row = np.array(single_row)
+            demonstrate_img = single_row if demonstrate_img is None else np.concatenate((demonstrate_img, single_row), 0)
+    else:
+        demonstrate_img = asImg(tensor)[0]
+
+    # Show the result
+    import cv2
+    cv2.imshow(title, demonstrate_img[:, :, ::-1])
+    if sec > 0:
+        cv2.waitKey(sec)
+    else:
+        cv2.waitKey()
