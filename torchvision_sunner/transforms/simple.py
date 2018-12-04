@@ -133,10 +133,10 @@ class GrayStack():
         """
         tensor = self.op_mv_c_back(tensor)
         if len(tensor.size()) == self.direction:
-            tensor = torch.stack([tensor, tensor, tensor], -1)
+            tensor = torch.cat([tensor, tensor, tensor], -1)
         elif len(tensor.size()) == self.direction + 1:
             if tensor.size(-1) == 1:
-                tensor = torch.cat([tensor, tensor, tensor], -1)
+                tensor = torch.stack([tensor, tensor, tensor], -1)
         else:
             raise Exception("The setting of tensor rank is {}, but GrayStack got: {}".format(self.direction, len(tensor.size())))
         tensor = self.op_mv_c_front(tensor)
