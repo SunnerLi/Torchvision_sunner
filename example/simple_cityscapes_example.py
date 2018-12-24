@@ -46,9 +46,10 @@ def main():
             tag_folder
         ],
         transform = transforms.Compose([
-            sunnertransforms.Resize((512, 1024)),
             sunnertransforms.ToTensor(),
+            sunnertransforms.ToFloat(),
             sunnertransforms.Transpose(sunnertransforms.BHWC2BCHW),
+            sunnertransforms.Resize((512, 1024)),
             sunnertransforms.Normalize(),
         ])), batch_size = 32, shuffle = False, num_workers = 2
     )

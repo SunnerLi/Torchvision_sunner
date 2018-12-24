@@ -22,7 +22,7 @@ class Resize(OP):
         """
         self.output_size = output_size
         INFO("Applied << %15s >>" % self.__class__.__name__)
-        INFO("* Notice: the rank format of input tensor should be 'BHWC'")
+        INFO("* Notice: the rank format of input tensor should be 'BCHW'")
 
     def work(self, tensor):
         """
@@ -42,8 +42,20 @@ class Resize(OP):
             # print(max_v, min_v, mean, std)
             tensor = (tensor - mean) / std
 
+        # Permute
+        if len(tensor.shape) == 3:
+            tensor = np.transpose(tensor, (1, 2, 0))
+        else:
+            raise Exception("This case will be consider in the future...")
+
         # Work
         tensor = transform.resize(tensor, self.output_size, mode = 'constant', order = 0)
+
+        # Permute back
+        if len(tensor.shape) == 3:
+            tensor = np.transpose(tensor, (2, 0, 1))
+        else:
+            raise Exception("This case will be consider in the future...")
 
         # De-normalize the tensor
         if mean != -1 and std != -1:

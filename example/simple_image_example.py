@@ -21,9 +21,10 @@ def main():
             ['/home/sunner/Music/waiting_for_you_dataset/real_world']
         ],
         transform = transforms.Compose([
-            sunnertransforms.Resize((160, 320)),
             sunnertransforms.ToTensor(),
+            sunnertransforms.ToFloat(),
             sunnertransforms.Transpose(sunnertransforms.BHWC2BCHW),
+            sunnertransforms.Resize((160, 320)),
             sunnertransforms.Normalize(),
         ])), batch_size=32, shuffle=False, num_workers = 2
     )

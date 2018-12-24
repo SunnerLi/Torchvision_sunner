@@ -22,23 +22,25 @@ def main():
     # Create the dataset
     img_dataset = sunnerData.ImageDataset(
         root = [
-            ['/home/sunner/Music/Ear-Pen/train/img'], 
+            ['/home/sunner/Music/Ear-Pen-master/generate/train/img'], 
         ],
         transform = transforms.Compose([
-            sunnertransforms.Resize((260, 195)),
             sunnertransforms.ToTensor(),
+            sunnertransforms.ToFloat(),
             sunnertransforms.Transpose(sunnertransforms.BHWC2BCHW),
+            sunnertransforms.Resize((260, 195)),
             sunnertransforms.Normalize(),
         ]), save_file = False
     )
     tag_dataset = sunnerData.ImageDataset(
         root = [
-            ['/home/sunner/Music/Ear-Pen/train/tag']
+            ['/home/sunner/Music/Ear-Pen-master/generate/train/tag']
         ],
         transform = transforms.Compose([
-            sunnertransforms.Resize((260, 195)),
             sunnertransforms.ToTensor(),
+            sunnertransforms.ToFloat(),
             sunnertransforms.Transpose(sunnertransforms.BHWC2BCHW),
+            sunnertransforms.Resize((260, 195)),
             sunnertransforms.Normalize(),
             sunnertransforms.CategoricalTranspose(pallete = pallete, direction = sunnertransforms.COLOR2INDEX, index_default = 0)
         ])

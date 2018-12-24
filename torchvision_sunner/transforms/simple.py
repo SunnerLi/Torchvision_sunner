@@ -114,7 +114,7 @@ class RandomVerticalFlip():
         return tensor
 
 class GrayStack():
-    def __init__(self, direction = BHW2BCHW):
+    def __init__(self, direction = BHW2BHWC):
         """
             Stack the gray-scale image for 3 times to become RGB image
             If the input is already RGB image, this function do nothing
@@ -122,22 +122,23 @@ class GrayStack():
             Arg:    direction   - The stack direction you want to conduct
         """
         INFO("Applied << %15s >>" % self.__class__.__name__)
-        INFO("* Notice: the rank format of input tensor should be 'BCHW'")
+        INFO("* Notice: the rank format of input tensor should be 'BHWC'")
         self.direction = direction
-        self.op_mv_c_back  = Transpose(BCHW2BHWC)
-        self.op_mv_c_front = Transpose(BHWC2BCHW)
 
     def __call__(self, tensor):
         """
             Arg:    tensor - The torch.Tensor object. The tensor you want to deal with
         """
-        tensor = self.op_mv_c_back(tensor)
-        if len(tensor.size()) == self.direction:
-            tensor = torch.cat([tensor, tensor, tensor], -1)
-        elif len(tensor.size()) == self.direction + 1:
-            if tensor.size(-1) == 1:
-                tensor = torch.stack([tensor, tensor, tensor], -1)
+        if isinstance(tensor, np.ndarray):
+            tensor = tensor.from_numpy(tensor)
+            back_to_numpy = True
         else:
-            raise Exception("The setting of tensor rank is {}, but GrayStack got: {}".format(self.direction, len(tensor.size())))
-        tensor = self.op_mv_c_front(tensor)
+            back_to_numpy = False
+        if self.direction == len(tensor.size()):
+            if tensor.size(-1) == 1:
+                tensor = torch.cat([tensor, tensor, tensor], -1)
+        elif self.direction == (len(tensor.size()) + 1):
+            tensor = torch.stack([tensor, tensor, tensor], -1)
+        if back_to_numpy:
+            tensor = tensor.cpu().numpy()
         return tensor

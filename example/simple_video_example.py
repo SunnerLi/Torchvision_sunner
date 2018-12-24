@@ -25,8 +25,8 @@ def main():
     loader = sunnerData.DataLoader(
         sunnerData.VideoDataset(
             root = [
-                ['/home/sunner/Dataset/flower/A'], 
-                ['/home/sunner/Dataset/flower/B']
+                ['/home/sunner/Music/single_flower_video_dataset/A'], 
+                ['/home/sunner/Music/single_flower_video_dataset/B']
             ], transform = transform_op, T = 20
         ), batch_size=2, shuffle=False, num_workers = 2
     )

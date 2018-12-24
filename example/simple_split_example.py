@@ -25,9 +25,10 @@ def main():
     test_dataset = sunnerData.ImageDataset(
         file_name = '.split.pkl',
         transform = transforms.Compose([
-            sunnertransforms.Resize((160, 320)),
             sunnertransforms.ToTensor(),
+            sunnertransforms.ToFloat(),
             sunnertransforms.Transpose(sunnertransforms.BHWC2BCHW),
+            sunnertransforms.Resize((160, 320)),
             sunnertransforms.Normalize(),
         ])
     )
