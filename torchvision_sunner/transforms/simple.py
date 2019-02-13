@@ -150,7 +150,6 @@ class GrayStack():
         """
             Arg:    tensor - The torch.Tensor object. The tensor you want to deal with
         """
-        DEPRECATE(func_name = self.__class__.__name__, version = "19.3.15")
         if isinstance(tensor, np.ndarray):
             tensor = tensor.from_numpy(tensor)
             back_to_numpy = True
