@@ -24,24 +24,22 @@ def main():
         root = [
             ['/home/sunner/Music/Ear-Pen-master/generate/train/img'], 
         ],
-        transform = transforms.Compose([
+        transforms = transforms.Compose([
+            sunnertransforms.Resize((260, 195)),
             sunnertransforms.ToTensor(),
             sunnertransforms.ToFloat(),
-            sunnertransforms.Transpose(sunnertransforms.BHWC2BCHW),
-            sunnertransforms.Resize((260, 195)),
-            sunnertransforms.Normalize(),
-        ]), save_file = False
+            sunnertransforms.Normalize(mean = [0.5, 0.5, 0.5], std = [0.5, 0.5, 0.5]),
+        ])
     )
     tag_dataset = sunnerData.ImageDataset(
         root = [
             ['/home/sunner/Music/Ear-Pen-master/generate/train/tag']
         ],
-        transform = transforms.Compose([
+        transforms = transforms.Compose([
+            sunnertransforms.Resize((260, 195)),
             sunnertransforms.ToTensor(),
             sunnertransforms.ToFloat(),
-            sunnertransforms.Transpose(sunnertransforms.BHWC2BCHW),
-            sunnertransforms.Resize((260, 195)),
-            sunnertransforms.Normalize(),
+            sunnertransforms.Normalize(mean = [0.5, 0.5, 0.5], std = [0.5, 0.5, 0.5]),
             sunnertransforms.CategoricalTranspose(pallete = pallete, direction = sunnertransforms.COLOR2INDEX, index_default = 0)
         ])
     )

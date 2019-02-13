@@ -35,7 +35,7 @@ import os
 """
 
 class VideoDataset(BaseDataset):
-    def __init__(self, root = None, file_name = '.remain.pkl', T = 10, sample_method = UNDER_SAMPLING, transform = None, 
+    def __init__(self, root = None, file_name = '.remain.pkl', T = 10, sample_method = UNDER_SAMPLING, transforms = None, 
                     split_ratio = 0.0, decode_root = './.decode', save_file = False):
         """
             The constructor of VideoDataset
@@ -57,7 +57,7 @@ class VideoDataset(BaseDataset):
         self.file_name = file_name
         self.T = T
         self.sample_method = sample_method
-        self.transform = transform
+        self.transforms = transforms
         self.split_ratio = split_ratio
         self.decode_root = decode_root
         self.video_num = -1
@@ -301,8 +301,8 @@ class VideoDataset(BaseDataset):
                 film_sequence.append(img)
 
             # Transform the film sequence
-            film_sequence = np.asarray(film_sequence)
-            if self.transform:
-                film_sequence = self.transform(film_sequence)
+            # film_sequence = np.asarray(film_sequence)
+            if self.transforms:
+                film_sequence = self.transforms(film_sequence)
             result.append(film_sequence)
         return result

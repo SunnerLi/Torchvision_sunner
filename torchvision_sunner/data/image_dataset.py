@@ -4,7 +4,6 @@ from torchvision_sunner.constant import *
 from torchvision_sunner.utils import INFO
 
 from skimage import io as io
-# from PIL import Image
 from glob import glob
 
 import torch.utils.data as Data
@@ -33,7 +32,7 @@ import os
 """
 
 class ImageDataset(BaseDataset):
-    def __init__(self, root = None, file_name = '.remain.pkl', sample_method = UNDER_SAMPLING, transform = None, 
+    def __init__(self, root = None, file_name = '.remain.pkl', sample_method = UNDER_SAMPLING, transforms = None, 
                     split_ratio = 0.0, save_file = False):
         """
             The constructor of ImageDataset
@@ -51,7 +50,7 @@ class ImageDataset(BaseDataset):
         self.root = root
         self.file_name = file_name
         self.sample_method = sample_method
-        self.transform = transform
+        self.transforms = transforms
         self.split_ratio = split_ratio
         self.save_file = save_file
         self.img_num = -1
@@ -207,7 +206,7 @@ class ImageDataset(BaseDataset):
         for domain in self.root:
             img_path = self.files[domain][index]
             img = readItem(img_path)
-            if self.transform:
-                img = self.transform(img)
+            if self.transforms:
+                img = self.transforms(img)
             return_list.append(img)
         return return_list

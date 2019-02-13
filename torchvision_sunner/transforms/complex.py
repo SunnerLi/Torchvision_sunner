@@ -1,5 +1,6 @@
+from torchvision_sunner.transforms.simple import ToFloat
 from torchvision_sunner.transforms.base import OP
-from torchvision_sunner.utils import INFO
+from torchvision_sunner.utils import INFO, DEPRECATE
 from skimage import transform
 import numpy as np
 import torch
@@ -11,10 +12,10 @@ import torch
     Author: SunnerLi
 """
 
-class Resize(OP):
+class Rescale(OP):
     def __init__(self, output_size):
         """
-            Resize the tensor to the desired size
+            Rescale the tensor to the desired size
             This function only support for nearest-neighbor interpolation
             Since this mechanism can also deal with categorical data
 
@@ -23,15 +24,17 @@ class Resize(OP):
         self.output_size = output_size
         INFO("Applied << %15s >>" % self.__class__.__name__)
         INFO("* Notice: the rank format of input tensor should be 'BCHW'")
-
+        
     def work(self, tensor):
         """
-            Resize the tensor
+            Rescale the tensor
             If the tensor is not in the range of [-1, 1], we will do the normalization automatically
 
             Arg:    tensor  - The np.ndarray object. The tensor you want to deal with
             Ret:    The resized tensor
         """
+        DEPRECATE(func_name = self.__class__.__name__, version = "19.3.15")
+
         # Normalize the tensor if needed
         mean, std = -1, -1
         min_v = np.min(tensor)
@@ -63,10 +66,13 @@ class Resize(OP):
         return tensor    
 
 class Normalize(OP):
-    def __init__(self, mean = [127.5, 127.5, 127.5], std = [127.5, 127.5, 127.5]):
+    def __init__(self, mean = [0.485, 0.456, 0.406], std = [0.229, 0.224, 0.225]):
         """
             Normalize the tensor with given mean and standard deviation
-            * Notice: If you didn't give mean and std, the result will locate in [-1, 1]
+            We recommand you to set mean as [0.5, 0.5, 0.5], and std as [0.5, 0.5, 0.5]
+            Then the range will locate in [-1, 1]
+            * Notice: If you didn't give mean and std, then we will follow the preprocessing of VGG
+                      However, The range is NOT located in [-1, 1]
 
             Args:
                 mean        - The mean of the result tensor
@@ -79,8 +85,8 @@ class Normalize(OP):
         INFO("*****************************************************************")
         INFO("* Notice: You should must call 'ToFloat' before normalization")
         INFO("*****************************************************************")
-        if self.mean == [127.5, 127.5, 127.5] and self.std == [127.5, 127.5, 127.5]:
-            INFO("* Notice: The result will locate in [-1, 1]")
+        if self.mean == [0.485, 0.456, 0.406] and self.std == [0.229, 0.224, 0.225]:
+            INFO("* Notice: The result will NOT locate in [-1, 1]")
 
     def work(self, tensor):
         """
@@ -90,20 +96,26 @@ class Normalize(OP):
             Ret:    The normalized tensor
         """
         if tensor.shape[0] != len(self.mean):
-            raise Exception("The rank format should be BCHW, but the shape is {}".format(tensor.shape))
+            raise Exception("The channel size should be {}, but the shape is {}".format(len(self.mean), tensor.shape))
+        
+        # Record the minimun and maximun value (in order to check if the function work normally)
+        min_v, max_v = np.min(tensor), np.max(tensor)
+
+        # Normalize with the given mean and std
         result = []
         for t, m, s in zip(tensor, self.mean, self.std):
             result.append((t - m) / s)
         tensor = np.asarray(result)
 
         # Check if the normalization can really work
-        if np.min(tensor) < -1 or np.max(tensor) > 1:
-            raise Exception("Normalize can only work with float tensor",
-                "Try to call 'ToFloat()' before normalization")
+        if self.mean != [1.0, 1.0, 1.0] and self.std != [1.0, 1.0, 1.0]:
+            if np.min(tensor) == min_v and np.max(tensor) == max_v:
+                raise Exception("Normalize can only work with float tensor",
+                    "Try to call 'ToFloat()' before normalization")
         return tensor
 
 class UnNormalize(OP):
-    def __init__(self, mean = [127.5, 127.5, 127.5], std = [127.5, 127.5, 127.5]):
+    def __init__(self, mean = [0.485, 0.456, 0.406], std = [0.229, 0.224, 0.225]):
         """
             Unnormalize the tensor with given mean and standard deviation
             * Notice: If you didn't give mean and std, the function will assume that the original distribution locates in [-1, 1]
@@ -116,8 +128,9 @@ class UnNormalize(OP):
         self.std = std
         INFO("Applied << %15s >>" % self.__class__.__name__)
         INFO("* Notice: the rank format of input tensor should be 'BCHW'")
-        if self.mean == [127.5, 127.5, 127.5] and self.std == [127.5, 127.5, 127.5]:
-            INFO("* Notice: The function assume that the input range is [-1, 1]")
+        if self.mean == [0.485, 0.456, 0.406] and self.std == [0.229, 0.224, 0.225]:
+            INFO("* Notice: The function assume that the normalize method is the same as VGG preprocessing")
+
 
     def work(self, tensor):
         """

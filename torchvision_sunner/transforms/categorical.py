@@ -145,7 +145,7 @@ class CategoricalTranspose():
         tensor = tensor.transpose(-3, -2).transpose(-2, -1).cpu().data.numpy()
         size_tuple = list(np.shape(tensor))
         tensor = (tensor * 127.5 + 127.5).astype(np.uint8)
-        tensor = np.reshape(tensor, [-1, 3])
+        tensor = np.reshape(tensor, [-1, 3])        
         tensor = [tuple(_) for _ in tensor]
         tensor = [self.pallete.get(_, self.index_default) for _ in tensor]
         tensor = np.asarray(tensor)
@@ -214,17 +214,25 @@ class CategoricalTranspose():
         return tensor
 
     def __call__(self, tensor):
+        """
+            Transfer the tensor into different index format
+            Notice: the data range of RGB tensor is [-1 ~ 1]
+
+            Arg:    tensor  (torch.FloatTensor) - The tensor you want to transfer
+            Ret:    The tensor with desired format
+        """
         if self.direction == COLOR2INDEX:
-            return self.fn_color_to_index(tensor)
+            tensor = self.fn_color_to_index(tensor)
         elif self.direction == INDEX2COLOR:
-            return self.fn_index_to_color(tensor)
+            tensor = self.fn_index_to_color(tensor)
         elif self.direction == ONEHOT2INDEX:
-            return self.fn_one_hot_to_index(tensor)
+            tensor = self.fn_one_hot_to_index(tensor)
         elif self.direction == INDEX2ONEHOT:
-            return self.fn_index_to_one_hot(tensor)
+            tensor = self.fn_index_to_one_hot(tensor)
         elif self.direction == ONEHOT2COLOR:
-            return self.fn_index_to_color(self.fn_one_hot_to_index(tensor))
+            tensor = self.fn_index_to_color(self.fn_one_hot_to_index(tensor))
         elif self.direction == COLOR2ONEHOT:
-            return self.fn_index_to_one_hot(self.fn_color_to_index(tensor))
+            tensor = self.fn_index_to_one_hot(self.fn_color_to_index(tensor))
         else:
             raise Exception("Unknown direction: {}".format(self.direction))
+        return tensor

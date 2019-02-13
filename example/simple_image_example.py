@@ -16,17 +16,16 @@ import cv2
 def main():
     # Create the fundemental data loader
     loader = sunnerData.DataLoader(sunnerData.ImageDataset(
-        root = [
+        root = [ 
             ['/home/sunner/Music/waiting_for_you_dataset/wait'], 
             ['/home/sunner/Music/waiting_for_you_dataset/real_world']
         ],
-        transform = transforms.Compose([
+        transforms = transforms.Compose([
+            sunnertransforms.Resize((160, 320)),
             sunnertransforms.ToTensor(),
             sunnertransforms.ToFloat(),
-            sunnertransforms.Transpose(sunnertransforms.BHWC2BCHW),
-            sunnertransforms.Resize((160, 320)),
-            sunnertransforms.Normalize(),
-        ])), batch_size=32, shuffle=False, num_workers = 2
+            sunnertransforms.Normalize(mean = [0.5, 0.5, 0.5], std = [0.5, 0.5, 0.5]),
+        ])), batch_size = 32, shuffle = False, num_workers = 2
     )
 
     # Use upper wrapper to assign particular iteration

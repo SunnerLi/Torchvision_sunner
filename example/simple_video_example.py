@@ -15,10 +15,10 @@ import cv2
 def main():
     # Define op first
     transform_op = transforms.Compose([
+        sunnertransforms.Resize((160, 320)),
         sunnertransforms.ToTensor(),
         sunnertransforms.ToFloat(),
-        sunnertransforms.Transpose(sunnertransforms.BHWC2BCHW),
-        sunnertransforms.Normalize(),
+        sunnertransforms.Normalize(mean = [0.5, 0.5, 0.5], std = [0.5, 0.5, 0.5]),
     ])
 
     # Define loader
@@ -27,7 +27,7 @@ def main():
             root = [
                 ['/home/sunner/Music/single_flower_video_dataset/A'], 
                 ['/home/sunner/Music/single_flower_video_dataset/B']
-            ], transform = transform_op, T = 20
+            ], transforms = transform_op, T = 20
         ), batch_size=2, shuffle=False, num_workers = 2
     )
 

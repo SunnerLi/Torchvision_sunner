@@ -19,17 +19,16 @@ def main():
         root = [
             ['/home/sunner/Music/waiting_for_you_dataset/wait'], 
             ['/home/sunner/Music/waiting_for_you_dataset/real_world']
-        ], transform = None, split_ratio = 0.1, save_file = True
+        ], transforms = None, split_ratio = 0.1, save_file = True
     )
     del train_dataset
     test_dataset = sunnerData.ImageDataset(
         file_name = '.split.pkl',
-        transform = transforms.Compose([
+        transforms = transforms.Compose([
+            sunnertransforms.Resize((160, 320)),
             sunnertransforms.ToTensor(),
             sunnertransforms.ToFloat(),
-            sunnertransforms.Transpose(sunnertransforms.BHWC2BCHW),
-            sunnertransforms.Resize((160, 320)),
-            sunnertransforms.Normalize(),
+            sunnertransforms.Normalize(mean = [0.5, 0.5, 0.5], std = [0.5, 0.5, 0.5]),
         ])
     )
 

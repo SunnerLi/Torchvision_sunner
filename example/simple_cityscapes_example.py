@@ -31,9 +31,12 @@ def main():
         root = [
             tag_folder
         ],
-        transform = transforms.Compose([
+        transforms = transforms.Compose([            
             sunnertransforms.ToTensor(),
-        ]), save_file = False                               # Don't save the record file, be careful!
+            sunnertransforms.ToFloat(),
+            sunnertransforms.UnNormalize(mean=[0, 0, 0], std=[255, 255, 255]),  # Remember to transfer back to [0~255] before generate pallete 
+            sunnertransforms.Transpose(sunnertransforms.BCHW2BHWC)              # Remember to transfer back to BHWC before generate pallete 
+        ])
         ), batch_size = 2, shuffle = False, num_workers = 2
     )
     pallete = sunnertransforms.getCategoricalMapping(loader, path = 'pallete.json')[0]
@@ -45,12 +48,11 @@ def main():
             img_folder,
             tag_folder
         ],
-        transform = transforms.Compose([
+        transforms = transforms.Compose([
+            sunnertransforms.Resize((512, 1024)),
             sunnertransforms.ToTensor(),
             sunnertransforms.ToFloat(),
-            sunnertransforms.Transpose(sunnertransforms.BHWC2BCHW),
-            sunnertransforms.Resize((512, 1024)),
-            sunnertransforms.Normalize(),
+            sunnertransforms.Normalize(mean = [0.5, 0.5, 0.5], std = [0.5, 0.5, 0.5]),
         ])), batch_size = 32, shuffle = False, num_workers = 2
     )
 
