@@ -1,6 +1,6 @@
 # Torchvision_sunner
 
-[![Packagist](https://img.shields.io/badge/Version-18.9.15-yellow.svg)]()
+[![Packagist](https://img.shields.io/badge/Version-19.4.15-yellow.svg)]()
 [![Packagist](https://img.shields.io/badge/Pytorch-0.4.1-red.svg)]()
 [![Packagist](https://img.shields.io/badge/Torchvision-0.2.0-red.svg)]()
 [![Packagist](https://img.shields.io/badge/Python-3.5.2-blue.svg)]()
@@ -14,7 +14,11 @@ In pytorch, the common dataset can be load in an easy way. It also provides the 
 
 Install & Usage
 ---
-Since the version ``18.9.15``, we provide the detail manual. You can refer to the [book](https://torchvision-sunner-book.readthedocs.io/en/latest/) to check the detail (including tutorial of the toolkit)!
+Since the version ``18.9.15``, we provide the detail manual. You can refer to the [book](https://torchvision-sunner-book.readthedocs.io/en/latest/) to check the detail (including tutorial of the toolkit)! Or you can copy the following command to install. 
+
+```
+git clone https://github.com/SunnerLi/Torchvision_sunner.git && cd Torchvision_sunner/ && git fetch origin master && cd .. && mv Torchvision_sunner/torchvision_sunner/ . && rm -rf Torchvision_sunner/
+```
 
 Requirement
 ---
